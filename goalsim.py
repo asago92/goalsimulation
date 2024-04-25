@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 st.title('Soccer Game Goal Simulation')
 
 # Input sliders for the probabilities
-prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value= 0)
-prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.0, value= 0)
+prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value=0.0)
+prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.0, value=0.0)
 
 # Input for number of simulations
 num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=1000)
