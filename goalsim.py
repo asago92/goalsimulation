@@ -59,7 +59,7 @@ with tab1:
     if __name__ == "__main__":
         main()
 
-with tab 2:
+with tab2:
     def simulate_goals(prob, minutes=90):
         # Simulates goals for one team in a single game
         return np.random.binomial(minutes, prob)
