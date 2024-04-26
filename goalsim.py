@@ -60,7 +60,6 @@ with tab1:
         main()
 
 with tab 2:
-
     def simulate_goals(prob, minutes=90):
         # Simulates goals for one team in a single game
         return np.random.binomial(minutes, prob)
