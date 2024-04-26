@@ -17,36 +17,41 @@ prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per m
 num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=1000)
 
 tab1, tab2 = st.tabs(["Analysis", "Simulation"])
-with tab1:
-    # Load the data
-    data = pd.read_csv('epl_streamlit - Sheet1.csv')
-    
-    # Streamlit app
+with tab1:    
     def main():
         st.title('Football Team Statistics')
     
         # Dropdown to select a team
         team_list = list(set(data['Home Team']).union(set(data['Away Team'])))
         selected_team = st.selectbox('Select a team', team_list)
-        result_list = list(set(data['Home Result']).union(set(data['Away Result'])))
-        match_result = st.selectbox('Match Result', result_list)
+    
+        # Dropdown to select result type
+        result_options = ['All', 'W', 'L', 'D']
+        selected_result = st.selectbox('Select result type', result_options)
     
         # Filter data for selected team
-        home_data = data[data['Home Team'] == selected_team]
-        away_data = data[data['Away Team'] == selected_team]
+        if selected_result == 'All':
+            home_data = data[data['Home Team'] == selected_team]
+            away_data = data[data['Away Team'] == selected_team]
+        else:
+            home_data = data[(data['Home Team'] == selected_team) & (data['Home Result'] == selected_result)]
+            away_data = data[(data['Away Team'] == selected_team) & (data['Away Result'] == selected_result)]
     
         # Calculate averages
         total_matches = len(home_data) + len(away_data)
-        avg_goals_per_match = (home_data['Home Goals'].sum() + away_data['Away Goals'].sum()) / total_matches
-        avg_goals_conceded = (home_data['Home Conceded'].sum() + away_data['Away Conceded'].sum()) / total_matches
-        avg_home_goals = home_data['Home Goals'].mean()
-        avg_away_goals = away_data['Away Goals'].mean()
+        if total_matches > 0:
+            avg_goals_per_match = (home_data['Home Goals'].sum() + away_data['Away Goals'].sum()) / total_matches
+            avg_goals_conceded = (home_data['Home Conceded'].sum() + away_data['Away Conceded'].sum()) / total_matches
+            avg_home_goals = home_data['Home Goals'].mean()
+            avg_away_goals = away_data['Away Goals'].mean()
     
-        # Display statistics
-        st.write(f"Average Goals per Match: {avg_goals_per_match:.2f}")
-        st.write(f"Average Goals Conceded per Match: {avg_goals_conceded:.2f}")
-        st.write(f"Average Home Goals: {avg_home_goals:.2f}")
-        st.write(f"Average Away Goals: {avg_away_goals:.2f}")
+            # Display statistics
+            st.write(f"Average Goals per Match: {avg_goals_per_match:.2f}")
+            st.write(f"Average Goals Conceded per Match: {avg_goals_conceded:.2f}")
+            st.write(f"Average Home Goals: {avg_home_goals:.2f}")
+            st.write(f"Average Away Goals: {avg_away_goals:.2f}")
+        else:
+            st.write("No matches found for the selected filters.")
     
         # Plotting the count of goals per match number
         goals_per_match = pd.concat([home_data.assign(Goals=home_data['Home Goals']),
