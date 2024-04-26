@@ -16,7 +16,7 @@ prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per m
 # Input for number of simulations
 num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=1000)
 
-tab1, tab2 = st.tabs(["Analysis", "Simulation")]
+tab1, tab2 = st.tabs(["Analysis", "Simulation"])
 with tab1:
     # Load the data
     data = pd.read_csv('epl_streamlit - Sheet1.csv')
