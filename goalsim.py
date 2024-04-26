@@ -28,6 +28,8 @@ with tab1:
         # Dropdown to select a team
         team_list = list(set(data['Home Team']).union(set(data['Away Team'])))
         selected_team = st.selectbox('Select a team', team_list)
+        result_list = list(set(data['Home Result']).union(set(data['Away Result'])))
+        match_result = st.selectbox('Match Result', result_list)
     
         # Filter data for selected team
         home_data = data[data['Home Team'] == selected_team]
