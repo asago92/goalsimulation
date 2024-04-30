@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 st.title('Soccer Game Goal Simulation')
 
 # Load the data
-data = pd.read_csv('epl_streamlit - Sheet1.csv')
+data = pd.read_csv('epl_streamlit_30April.csv')
 
 # Input sliders for the probabilities
 prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value=0.0)
