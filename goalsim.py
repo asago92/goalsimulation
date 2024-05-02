@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 st.title('Soccer Game Goal Simulation')
 
@@ -50,6 +51,24 @@ with tab1:
             st.write(f"Average Goals Conceded per Match: {avg_goals_conceded:.2f}")
             st.write(f"Average Home Goals: {avg_home_goals:.2f}")
             st.write(f"Average Away Goals: {avg_away_goals:.2f}")
+        else:
+            st.write("No matches found for the selected filters.")
+
+        # Prepare data for model training
+        X = home_data[['Match Number']].values
+        y = home_data['Home Goals'].values
+        model = LinearRegression()
+        model.fit(X, y)
+        predicted_home_goals = model.predict([[total_matches + 1]])  # Predict next match home goals
+
+        X_away = away_data[['Match Number']].values
+        y_away = away_data['Away Goals'].values
+        model_away = LinearRegression()
+        model_away.fit(X_away, y_away)
+        predicted_away_goals = model_away.predict([[total_matches + 1]])  # Predict next match away goals
+
+        st.write(f"Predicted Home Goals in next match: {predicted_home_goals[0]:.2f}")
+        st.write(f"Predicted Away Goals in next match: {predicted_away_goals[0]:.2f}")
         else:
             st.write("No matches found for the selected filters.")
     
