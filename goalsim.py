@@ -69,8 +69,6 @@ with tab1:
 
         st.write(f"Predicted Home Goals in next match: {predicted_home_goals[0]:.2f}")
         st.write(f"Predicted Away Goals in next match: {predicted_away_goals[0]:.2f}")
-        else:
-            st.write("No matches found for the selected filters.")
     
         # Plotting the count of goals per match number
         goals_per_match = pd.concat([home_data.assign(Goals=home_data['Home Goals']),
