@@ -120,6 +120,16 @@ with tab2:
     st.write(f"Team 1 Win Percentage: {team1_win_percentage:.2f}%")
     st.write(f"Team 2 Win Percentage: {team2_win_percentage:.2f}%")
     st.write(f"Draw Percentage: {draw_percentage:.2f}%")
+
+    # Calculate average goals
+    average_goals_team1 = df_results['Team 1 Goals'].mean()
+    average_goals_team2 = df_results['Team 2 Goals'].mean()
+
+    # Display the predicted average goals in Streamlit
+    st.write('Predicted Average Goals:')
+    st.write(f"Average Goals Scored by Team 1: {average_goals_team1:.2f}")
+    st.write(f"Average Goals Scored by Team 2: {average_goals_team2:.2f}")
+
     
     # Visualize the distribution of goals
     st.write('Goal Distribution for Team 1')
