@@ -8,14 +8,14 @@ from sklearn.linear_model import LinearRegression
 st.title('Soccer Game Goal Simulation')
 
 # Load the data
-data = pd.read_csv('epl_streamlit_30April.csv')
+data = pd.read_csv('epl_streamlit_5May.csv')
 
 # Input sliders for the probabilities
 prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value=0.0)
 prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.0, value=0.0)
 
 # Input for number of simulations
-num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=1000)
+num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=2000)
 
 tab1, tab2 = st.tabs(["Analysis", "Simulation"])
 with tab1:    
@@ -131,13 +131,6 @@ with tab2:
     st.write(f"Average Goals Scored by Team 2: {average_goals_team2:.2f}")
 
     
-    # Visualize the distribution of goals
-    st.write('Goal Distribution for Team 1')
-    sns.histplot(df_results['Team 1 Goals'], kde=True)
-    st.pyplot(plt)
     
-    st.write('Goal Distribution for Team 2')
-    sns.histplot(df_results['Team 2 Goals'], kde=True)
-    st.pyplot(plt)
 
 
