@@ -18,7 +18,11 @@ with tab1:
     data['Away Result Code'] = data['Away Result'].map(result_mapping)
     
     def main():
-        st.title('Football Match Score Prediction')
+        st.subheader('Score Prediction')
+        st.write("""
+        The linear regression model looks at all previous matches (how many goals were scored and conceded, and whether the matches were won, lost, or drawn).
+        It uses this information to find patterns or trends. Based on these trends, it makes a prediction for the next match.
+        """)
     
         # Dropdowns to select home and away teams
         team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
@@ -124,7 +128,7 @@ with tab2:
     draw_percentage = (draws / total_games) * 100
     
     # Display results
-    st.write('Winning Statistics:')
+    st.subheader('Winning Statistics:')
     cols = st.columns(3)
     with cols[0]:
         st.metric(label="Home Team Win", value=f"{team1_win_percentage:.2f}%")
@@ -138,7 +142,7 @@ with tab2:
     average_goals_team2 = df_results['Team 2 Goals'].mean()
 
     # Display the predicted average goals in Streamlit
-    st.write('Predicted Average Goals:')
+    st.subheader('Predicted Average Goals:')
     cols = st.columns(2)
     with cols[0]:
         st.metric(label="Home Team Avg Goals", value=f"{average_goals_team1:.2f}")
