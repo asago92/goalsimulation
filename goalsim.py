@@ -10,10 +10,6 @@ st.title('Soccer Game Goal Simulation')
 # Load the data
 data = pd.read_csv('epl_streamlit_13May.csv')
 
-# Input sliders for the probabilities
-prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value=0.0)
-prob_team2 = st.sidebar.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.0, value=0.0)
-
 # Input for number of simulations
 num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=2000)
 
@@ -91,11 +87,13 @@ with tab1:
 
 with tab2:
     # Input sliders for the probabilities
-    cols = st.columns(2)
+    cols = st.columns(3)
     with cols[0]:   
         prob_team1 = st.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.00, value=0.0)
     with cols[1]:
         prob_team2 = st.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.00, value=0.0)
+    with cols[2]:
+        num_simulations = st.number_input('Number of Simulations', min_value=1, value=2000)
         
     def simulate_goals(prob, minutes=90):
         # Simulates goals for one team in a single game
