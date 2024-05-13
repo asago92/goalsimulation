@@ -91,6 +91,8 @@ with tab2:
         prob_team2 = st.number_input('Away Team Score Prob', min_value=0.00, value=0.0)
     with cols[2]:
         num_simulations = st.number_input('Number of Simulations', min_value=1, value=2000)
+
+    st.markdown("---")
         
     def simulate_goals(prob, minutes=90):
         # Simulates goals for one team in a single game
@@ -142,6 +144,8 @@ with tab2:
         st.metric(label="Home Team Avg Goals", value=f"{average_goals_team1:.2f}")
     with cols[1]:
         st.metric(label="Away Team Avg Goals", value=f"{average_goals_team2:.2f}")
+
+    st.markdown("###")
 
     # Create a DataFrame to display results
     with st.expander("Simulation Results"):
