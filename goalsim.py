@@ -90,6 +90,13 @@ with tab1:
         main()
 
 with tab2:
+    # Input sliders for the probabilities
+    cols = st.columns(2)
+    with cols[0]:   
+        prob_team1 = st.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.00, value=0.0)
+    with cols[1]:
+        prob_team2 = st.number_input('Probability of Team 2 scoring a goal per minute', min_value=0.00, value=0.0)
+        
     def simulate_goals(prob, minutes=90):
         # Simulates goals for one team in a single game
         return np.random.binomial(minutes, prob)
