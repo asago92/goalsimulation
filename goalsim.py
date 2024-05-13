@@ -97,9 +97,6 @@ with tab1:
         ax.set_title('Count of Goals per Match Number')
         ax.set_ylabel('Total Goals')
         st.pyplot(fig)
-    
-    if __name__ == "__main__":
-        main()
 
 with tab2:
     def simulate_goals(prob, minutes=90):
