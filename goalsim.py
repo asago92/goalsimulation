@@ -107,6 +107,7 @@ with tab2:
     
     # Create a DataFrame to display results
     with st.expander("Simulation Results"):
+        
         df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
     
     # Calculate win statistics
