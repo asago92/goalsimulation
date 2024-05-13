@@ -35,8 +35,6 @@ with tab1:
         with cols[1]:
             selected_away_team = st.selectbox('Select away team', team_list)
         
-        st.metric(label="Home Goals", value=predicted_away_goals[0])
-        
     
         # Filter data for selected teams
         home_data = data[data['Home Team'] == selected_home_team]
@@ -54,7 +52,7 @@ with tab1:
             model_home = LinearRegression()
             model_home.fit(home_features, home_goals)
             predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_conceded_by_opponent]])  # Example: Next match assumed win
-            st.write(f"Predicted Home Goals: {predicted_home_goals[0]:.2f}")
+            st.metric(label="Predicted Home Goals", value=f"{predicted_home_goals[0]:.2f}")
         else:
             st.write("No home data available for predictions.")
     
