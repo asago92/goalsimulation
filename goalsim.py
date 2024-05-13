@@ -35,7 +35,7 @@ with tab1:
         with cols[1]:
             selected_away_team = st.selectbox('Select away team', team_list)
         
-        st.metric(label="Home Goals", value={predicted_away_goals[0]:.2f})
+        st.metric(label="Home Goals", value=predicted_away_goals[0])
         
     
         # Filter data for selected teams
