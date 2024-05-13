@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 st.title('Soccer Game Goal Simulation')
 
 # Load the data
-data = pd.read_csv('epl_streamlit_5May.csv')
+data = pd.read_csv('epl_streamlit_13May.csv')
 
 # Input sliders for the probabilities
 prob_team1 = st.sidebar.number_input('Probability of Team 1 scoring a goal per minute', min_value=0.0, value=0.0)
