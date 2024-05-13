@@ -141,9 +141,9 @@ with tab2:
     st.write('Predicted Average Goals:')
     cols = st.columns(2)
     with cols[0]:
-        st.metric(label="Home Team Avg Goals", value=f"{average_goals_team1:.2f}%")
+        st.metric(label="Home Team Avg Goals", value=f"{average_goals_team1:.2f}")
     with cols[1]:
-        st.metric(label="Away Team Avg Goals", value=f"{average_goals_team2:.2f}%")
+        st.metric(label="Away Team Avg Goals", value=f"{average_goals_team2:.2f}")
 
     
     
