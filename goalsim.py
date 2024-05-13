@@ -70,6 +70,21 @@ with tab1:
             st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
         else:
             st.write("No away data available for predictions.")
+
+     with st.expander("Statistics:"):
+         # Calculate averages
+        total_matches = len(home_data) + len(away_data)
+        if total_matches > 0:
+            avg_goals_per_match = (home_data['Home Goals'].sum() + away_data['Away Goals'].sum()) / total_matches
+            avg_goals_conceded = (home_data['Home Conceded'].sum() + away_data['Away Conceded'].sum()) / total_matches
+            avg_home_goals = home_data['Home Goals'].mean()
+            avg_away_goals = away_data['Away Goals'].mean()
+    
+            # Display statistics
+            st.write(f"Average Goals per Match: {avg_goals_per_match:.2f}")
+            st.write(f"Average Goals Conceded per Match: {avg_goals_conceded:.2f}")
+            st.write(f"Average Home Goals: {avg_home_goals:.2f}")
+            st.write(f"Average Away Goals: {avg_away_goals:.2f}")
     
     if __name__ == "__main__":
         main()
