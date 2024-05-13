@@ -23,6 +23,7 @@ with tab1:
         The linear regression model looks at all previous matches (how many goals were scored and conceded, and whether the matches were won, lost, or drawn).
         It uses this information to find patterns or trends. Based on these trends, it makes a prediction for the next match.
         """)
+        st.markdown("###")
     
         # Dropdowns to select home and away teams
         team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
@@ -91,6 +92,7 @@ with tab2:
     st.write("""
     This simulation predicts how many goals two soccer teams might score in a 90-minute game based on a calculated probablity of scoring against the strength of their opponent.
     """)
+    st.markdown("###")
     # Input sliders for the probabilities
     cols = st.columns(3)
     with cols[0]:   
