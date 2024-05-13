@@ -20,74 +20,47 @@ num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, 
 tab1, tab2 = st.tabs(["Analysis", "Simulation"])
 with tab1:        
     def main():
-        st.title('Football Team Statistics and Score Prediction')
+        st.title('Football Match Score Prediction')
     
-        # Dropdown to select a team
-        team_list = list(set(data['Home Team']).union(set(data['Away Team'])))
-        selected_team = st.selectbox('Select a team', team_list)
+        # Dropdowns to select home and away teams
+        team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
+        selected_home_team = st.selectbox('Select home team', team_list)
+        selected_away_team = st.selectbox('Select away team', team_list)
     
-        # Dropdown to select result type
-        result_options = ['All', 'W', 'L', 'D']
-        selected_result = st.selectbox('Select result type', result_options)
+        # Filter data for selected teams
+        home_data = data[data['Home Team'] == selected_home_team]
+        away_data = data[data['Away Team'] == selected_away_team]
     
-        # Filter data for selected team
-        if selected_result == 'All':
-            home_data = data[data['Home Team'] == selected_team]
-            away_data = data[data['Away Team'] == selected_team]
-        else:
-            home_data = data[(data['Home Team'] == selected_team) & (data['Home Result'] == selected_result)]
-            away_data = data[(data['Away Team'] == selected_team) & (data['Away Result'] == selected_result)]
+        # Prepare data for model training
+        # Home model
+        if not home_data.empty:
+            home_goals = home_data['Home Goals'].values
+            home_match_nums = home_data[['Match Number']]
+            home_conceded_by_opponent = data[data['Home Team'] == selected_away_team]['Away Conceded'].mean()
     
-        # Calculate averages
-        total_matches = len(home_data) + len(away_data)
-        if total_matches > 0:
-            avg_goals_per_match = (home_data['Home Goals'].sum() + away_data['Away Goals'].sum()) / total_matches
-            avg_goals_conceded = (home_data['Home Conceded'].sum() + away_data['Away Conceded'].sum()) / total_matches
-            avg_home_goals = home_data['Home Goals'].mean()
-            avg_away_goals = away_data['Away Goals'].mean()
-    
-            # Display statistics
-            st.write(f"Average Goals per Match: {avg_goals_per_match:.2f}")
-            st.write(f"Average Goals Conceded per Match: {avg_goals_conceded:.2f}")
-            st.write(f"Average Home Goals: {avg_home_goals:.2f}")
-            st.write(f"Average Away Goals: {avg_away_goals:.2f}")
-    
-            # Prepare data for model training
-            # Home model
-            home_opponent_conceded = data[data['Away Team'] == selected_team]['Home Conceded'].mean()
-            X_home = home_data[['Match Number']]
-            X_home['Opponent Avg Conceded'] = home_opponent_conceded
-            y_home = home_data['Home Goals'].values
-    
+            # Fit model for home team
+            X_home = np.hstack((home_match_nums, np.full((len(home_match_nums), 1), home_conceded_by_opponent)))
             model_home = LinearRegression()
-            model_home.fit(X_home, y_home)
-            next_match_num = total_matches + 1
-            predicted_home_goals = model_home.predict([[next_match_num, home_opponent_conceded]])
-    
-            # Away model
-            away_opponent_conceded = data[data['Home Team'] == selected_team]['Away Conceded'].mean()
-            X_away = away_data[['Match Number']]
-            X_away['Opponent Avg Conceded'] = away_opponent_conceded
-            y_away = away_data['Away Goals'].values
-    
-            model_away = LinearRegression()
-            model_away.fit(X_away, y_away)
-            predicted_away_goals = model_away.predict([[next_match_num, away_opponent_conceded]])
-    
-            st.write(f"Predicted Home Goals in next match: {predicted_home_goals[0]:.2f}")
-            st.write(f"Predicted Away Goals in next match: {predicted_away_goals[0]:.2f}")
+            model_home.fit(X_home, home_goals)
+            predicted_home_goals = model_home.predict([[len(home_data) + 1, home_conceded_by_opponent]])
+            st.write(f"Predicted Home Goals: {predicted_home_goals[0]:.2f}")
         else:
-            st.write("No matches found for the selected filters.")
+            st.write("No home data available for predictions.")
     
-        # Plotting the count of goals per match number
-        goals_per_match = pd.concat([home_data.assign(Goals=home_data['Home Goals']),
-                                     away_data.assign(Goals=away_data['Away Goals'])])
+        # Away model
+        if not away_data.empty:
+            away_goals = away_data['Away Goals'].values
+            away_match_nums = away_data[['Match Number']]
+            away_conceded_by_opponent = data[data['Away Team'] == selected_home_team]['Home Conceded'].mean()
     
-        fig, ax = plt.subplots()
-        goals_per_match.groupby('Match Number')['Goals'].sum().plot(kind='bar', ax=ax)
-        ax.set_title('Count of Goals per Match Number')
-        ax.set_ylabel('Total Goals')
-        st.pyplot(fig)
+            # Fit model for away team
+            X_away = np.hstack((away_match_nums, np.full((len(away_match_nums), 1), away_conceded_by_opponent)))
+            model_away = LinearRegression()
+            model_away.fit(X_away, away_goals)
+            predicted_away_goals = model_away.predict([[len(away_data) + 1, away_conceded_by_opponent]])
+            st.write(f"Predicted Away Goals: {predicted_away_goals[0]:.2f}")
+        else:
+            st.write("No away data available for predictions.")
     
     if __name__ == "__main__":
         main()
