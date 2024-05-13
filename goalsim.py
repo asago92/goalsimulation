@@ -19,11 +19,16 @@ num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, 
 
 tab1, tab2 = st.tabs(["Analysis", "Simulation"])
 with tab1:        
+    # Encode the results
+    result_mapping = {'W': 2, 'D': 1, 'L': 0}
+    data['Home Result Code'] = data['Home Result'].map(result_mapping)
+    data['Away Result Code'] = data['Away Result'].map(result_mapping)
+    
     def main():
         st.title('Football Match Score Prediction')
     
         # Dropdowns to select home and away teams
-        team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
+        team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team'])))
         selected_home_team = st.selectbox('Select home team', team_list)
         selected_away_team = st.selectbox('Select away team', team_list)
     
@@ -35,14 +40,14 @@ with tab1:
         # Home model
         if not home_data.empty:
             home_goals = home_data['Home Goals'].values
-            home_match_nums = home_data[['Match Number']]
+            home_features = home_data[['Match Number', 'Home Result Code']]
             home_conceded_by_opponent = data[data['Home Team'] == selected_away_team]['Away Conceded'].mean()
+            home_features['Opponent Avg Conceded'] = home_conceded_by_opponent
     
             # Fit model for home team
-            X_home = np.hstack((home_match_nums, np.full((len(home_match_nums), 1), home_conceded_by_opponent)))
             model_home = LinearRegression()
-            model_home.fit(X_home, home_goals)
-            predicted_home_goals = model_home.predict([[len(home_data) + 1, home_conceded_by_opponent]])
+            model_home.fit(home_features, home_goals)
+            predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_conceded_by_opponent]])  # Example: Next match assumed win
             st.write(f"Predicted Home Goals: {predicted_home_goals[0]:.2f}")
         else:
             st.write("No home data available for predictions.")
@@ -50,14 +55,14 @@ with tab1:
         # Away model
         if not away_data.empty:
             away_goals = away_data['Away Goals'].values
-            away_match_nums = away_data[['Match Number']]
+            away_features = away_data[['Match Number', 'Away Result Code']]
             away_conceded_by_opponent = data[data['Away Team'] == selected_home_team]['Home Conceded'].mean()
+            away_features['Opponent Avg Conceded'] = away_conceded_by_opponent
     
             # Fit model for away team
-            X_away = np.hstack((away_match_nums, np.full((len(away_match_nums), 1), away_conceded_by_opponent)))
             model_away = LinearRegression()
-            model_away.fit(X_away, away_goals)
-            predicted_away_goals = model_away.predict([[len(away_data) + 1, away_conceded_by_opponent]])
+            model_away.fit(away_features, away_goals)
+            predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_conceded_by_opponent]])  # Example: Next match assumed win
             st.write(f"Predicted Away Goals: {predicted_away_goals[0]:.2f}")
         else:
             st.write("No away data available for predictions.")
