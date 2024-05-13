@@ -67,7 +67,7 @@ with tab1:
             model_away = LinearRegression()
             model_away.fit(away_features, away_goals)
             predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_conceded_by_opponent]])  # Example: Next match assumed win
-            st.write(f"Predicted Away Goals: {predicted_away_goals[0]:.2f}")
+            st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
         else:
             st.write("No away data available for predictions.")
     
