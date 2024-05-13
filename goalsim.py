@@ -10,9 +10,6 @@ st.title('Soccer Game Goal Simulation')
 # Load the data
 data = pd.read_csv('epl_streamlit_13May.csv')
 
-# Input for number of simulations
-num_simulations = st.sidebar.number_input('Number of Simulations', min_value=1, value=2000)
-
 tab1, tab2 = st.tabs(["Analysis", "Simulation"])
 with tab1:        
     # Encode the results
