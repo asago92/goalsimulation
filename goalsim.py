@@ -87,6 +87,10 @@ with tab1:
         main()
 
 with tab2:
+    st.subheader('Goal Simulation')
+    st.write("""
+    This simulation predicts how many goals two soccer teams might score in a 90-minute game based on a calculated probablity of scoring against the strength of their opponent.
+    """)
     # Input sliders for the probabilities
     cols = st.columns(3)
     with cols[0]:   
