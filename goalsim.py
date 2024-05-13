@@ -28,7 +28,7 @@ with tab1:
         st.title('Football Match Score Prediction')
     
         # Dropdowns to select home and away teams
-        team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team'])))
+        team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
         selected_home_team = st.selectbox('Select home team', team_list)
         selected_away_team = st.selectbox('Select away team', team_list)
     
