@@ -75,7 +75,7 @@ with tab1:
         with cols[1]:
             st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
 
-
+        st.markdown("###")
         with st.expander("Goal Statistics"):
             
             total_matches = len(home_data) + len(away_data)
