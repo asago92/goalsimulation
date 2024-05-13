@@ -107,10 +107,8 @@ with tab2:
     # Run simulations
     results = run_simulations(prob_team1, prob_team2, num_simulations)
     
-    # Create a DataFrame to display results
-    with st.expander("Simulation Results"):       
-        df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
-        st.dataframe(df_results)
+    # Create a DataFrame to display results      
+    df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
     
     # Calculate win statistics
     team1_wins = np.sum(df_results['Team 1 Goals'] > df_results['Team 2 Goals'])
@@ -127,11 +125,11 @@ with tab2:
     st.write('Winning Statistics:')
     cols = st.columns(3)
     with cols[0]:
-        st.metric(label="Home Team Win Percentage", value=f"{team1_win_percentage:.2f}%")
+        st.metric(label="Home Team Win", value=f"{team1_win_percentage:.2f}%")
     with cols[1]:
-        st.metric(label="Away Team Win Percentage", value=f"{team2_win_percentage:.2f}%")
+        st.metric(label="Away Team Win", value=f"{team2_win_percentage:.2f}%")
     with cols[2]:
-        st.metric(label="Draw Percentage", value=f"{draw_percentage:.2f}%")
+        st.metric(label="Draw", value=f"{draw_percentage:.2f}%")
     st.markdown("---")
     # Calculate average goals
     average_goals_team1 = df_results['Team 1 Goals'].mean()
@@ -144,6 +142,10 @@ with tab2:
         st.metric(label="Home Team Avg Goals", value=f"{average_goals_team1:.2f}")
     with cols[1]:
         st.metric(label="Away Team Avg Goals", value=f"{average_goals_team2:.2f}")
+
+    # Create a DataFrame to display results
+    with st.expander("Simulation Results"):
+        st.dataframe(df_results)
 
     
     
