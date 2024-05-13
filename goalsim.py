@@ -50,7 +50,7 @@ with tab1:
             model_home = LinearRegression()
             model_home.fit(home_features, home_goals)
             predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_conceded_by_opponent]])  # Example: Next match assumed win
-            st.metric(label="Predicted Home Goals", value=f"{predicted_home_goals[0]:.2f}")
+            #st.metric(label="Predicted Home Goals", value=f"{predicted_home_goals[0]:.2f}")
         else:
             st.write("No home data available for predictions.")
     
@@ -65,9 +65,16 @@ with tab1:
             model_away = LinearRegression()
             model_away.fit(away_features, away_goals)
             predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_conceded_by_opponent]])  # Example: Next match assumed win
-            st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
+            #st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
         else:
             st.write("No away data available for predictions.")
+
+        cols = st.columns(2)
+        with cols[0]:
+            st.metric(label="Predicted Home Goals", value=f"{predicted_home_goals[0]:.2f}")
+        with cols[1]:
+            st.metric(label="Predicted Away Goals", value=f"{predicted_away_goals[0]:.2f}")
+
 
         with st.expander("Goal Statistics"):
             
