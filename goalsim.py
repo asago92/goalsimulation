@@ -34,8 +34,9 @@ with tab1:
             selected_home_team = st.selectbox('Select home team', team_list)
         with cols[1]:
             selected_away_team = st.selectbox('Select away team', team_list)
-        st.markdown("---")
-        st.metric(label="Temp", value="273 K", delta="1.2 K")
+        
+        st.metric(label="Home Goals", value="{predicted_away_goals[0]:.2f}")
+        
     
         # Filter data for selected teams
         home_data = data[data['Home Team'] == selected_home_team]
