@@ -106,7 +106,8 @@ with tab2:
     results = run_simulations(prob_team1, prob_team2, num_simulations)
     
     # Create a DataFrame to display results
-    df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
+    with st.expander("Simulation Results"):
+        df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
     
     # Calculate win statistics
     team1_wins = np.sum(df_results['Team 1 Goals'] > df_results['Team 2 Goals'])
