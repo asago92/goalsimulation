@@ -5,7 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-st.title('Soccer Game Goal Simulation')
+st.title('Goal Predictions and Simulation')
 
 # Load the data
 data = pd.read_csv('epl_streamlit_13May.csv')
