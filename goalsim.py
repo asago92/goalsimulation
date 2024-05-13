@@ -108,9 +108,9 @@ with tab2:
     results = run_simulations(prob_team1, prob_team2, num_simulations)
     
     # Create a DataFrame to display results
-    with st.expander("Simulation Results"):
-        
+    with st.expander("Simulation Results"):       
         df_results = pd.DataFrame(results, columns=['Team 1 Goals', 'Team 2 Goals'])
+        st.dataframe(df_results)
     
     # Calculate win statistics
     team1_wins = np.sum(df_results['Team 1 Goals'] > df_results['Team 2 Goals'])
@@ -124,21 +124,26 @@ with tab2:
     draw_percentage = (draws / total_games) * 100
     
     # Display results
-    st.write('Simulation Results:')
-    st.dataframe(df_results)
     st.write('Winning Statistics:')
-    st.write(f"Team 1 Win Percentage: {team1_win_percentage:.2f}%")
-    st.write(f"Team 2 Win Percentage: {team2_win_percentage:.2f}%")
-    st.write(f"Draw Percentage: {draw_percentage:.2f}%")
-
+    cols = st.columns(3)
+    with cols[0]:
+        st.metric(label="Home Team Win Percentage", value=f"{team1_win_percentage:.2f}%")
+    with cols[1]:
+        st.metric(label="Away Team Win Percentage", value=f"{team2_win_percentage:.2f}%")
+    with cols[2]:
+        st.metric(label="Draw Percentage", value=f"{draw_percentage:.2f}%")
+    st.markdown("---")
     # Calculate average goals
     average_goals_team1 = df_results['Team 1 Goals'].mean()
     average_goals_team2 = df_results['Team 2 Goals'].mean()
 
     # Display the predicted average goals in Streamlit
     st.write('Predicted Average Goals:')
-    st.write(f"Average Goals Scored by Team 1: {average_goals_team1:.2f}")
-    st.write(f"Average Goals Scored by Team 2: {average_goals_team2:.2f}")
+    cols = st.columns(2)
+    with cols[0]:
+        st.metric(label="Home Team Avg Goals Scored", value=f"{average_goals_team1:.2f}%")
+    with cols[1]:
+        st.metric(label="Away Team Avg Goals Scored", value=f"{average_goals_team2:.2f}%")
 
     
     
