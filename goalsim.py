@@ -29,8 +29,11 @@ with tab1:
     
         # Dropdowns to select home and away teams
         team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
-        selected_home_team = st.selectbox('Select home team', team_list)
-        selected_away_team = st.selectbox('Select away team', team_list)
+        cols = st.columns(2)
+        with cols[0]:
+            selected_home_team = st.selectbox('Select home team', team_list)
+        with cols[1]:
+            selected_away_team = st.selectbox('Select away team', team_list)
     
         # Filter data for selected teams
         home_data = data[data['Home Team'] == selected_home_team]
