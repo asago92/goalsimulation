@@ -18,7 +18,7 @@ with tab1:
     data['Away Result Code'] = data['Away Result'].map(result_mapping)
     
     def main():
-        st.subheader('Score Prediction')
+        st.subheader('Goal Prediction')
         st.write("""
         The linear regression model looks at all previous matches (how many goals were scored and conceded, and whether the matches were won, lost, or drawn).
         It uses this information to find patterns or trends. Based on these trends, it makes a prediction for the next match.
