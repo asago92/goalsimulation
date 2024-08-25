@@ -207,8 +207,8 @@ with tab3:
         away_goal_prob = [poisson.pmf(i, away_goals_expected) for i in range(6)]
     
         st.bar_chart(pd.DataFrame({
-            f'{Home Team} Goal Probability': home_goal_prob,
-            f'{Away Team} Goal Probability': away_goal_prob
+            f'{'Home Team'} Goal Probability': home_goal_prob,
+            f'{'Away Team'} Goal Probability': away_goal_prob
         }, index=list(range(6))))
 
 
