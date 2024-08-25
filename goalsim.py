@@ -4,13 +4,14 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from scipy.stats import poisson
 
-st.title('Goal Predictions and Simulation')
+st.title('Goal Predictions')
 
 # Load the data
 data = pd.read_csv('epl_streamlit_13May.csv')
 
-tab1, tab2 = st.tabs(["Analysis", "Simulation"])
+tab1, tab2, tab3 = st.tabs(["Linear Regression", "Simulation", "Poisson Distribution"])
 with tab1:        
     # Encode the results
     result_mapping = {'W': 2, 'D': 1, 'L': 0}
@@ -107,7 +108,7 @@ with tab2:
     with cols[1]:
         prob_team2 = st.number_input('Away Team Score Prob', min_value=0.00, value=0.0)
     with cols[2]:
-        num_simulations = st.number_input('Number of Simulations', min_value=1, value=2000)
+        num_simulations = st.number_input('Number of Simulations', min_value=1, value=10000)
 
     st.markdown("---")
         
@@ -167,6 +168,52 @@ with tab2:
     # Create a DataFrame to display results
     with st.expander("Simulation Results"):
         st.dataframe(df_results)
+
+with tab3:
+    data = pd.read_csv('epl_streamlit_13May.csv')
+    # Calculate average goals scored and conceded
+    team_stats = data.groupby('Home Team').agg({
+        'Home Goals': 'mean',
+        'Away Goals': 'mean'
+    }).rename(columns={'Home Goals': 'home_goals_avg', 'Away Goals': 'away_goals_avg'})
+    
+    team_stats['away_goals_avg'] = data.groupby('Away Team')['Away Goals'].mean()
+    team_stats['home_goals_conceded_avg'] = data.groupby('Home Team')['Away Goals'].mean()
+    team_stats['away_goals_conceded_avg'] = data.groupby('Away Team')['Home Goals'].mean()
+    
+    team_stats = team_stats.fillna(0)
+    st.title("Soccer Goal Prediction using Poisson Distribution")
+
+    st.header("Input Match Details")
+    home_team = st.selectbox("Home Team", team_stats.index)
+    away_team = st.selectbox("Away Team", team_stats.index)
+    
+    if st.button("Predict"):
+        home_goals_avg = team_stats.loc[Home Team, 'home_goals_avg']
+        away_goals_avg = team_stats.loc[Away Team, 'away_goals_avg']
+    
+        home_goals_conceded_avg = team_stats.loc[Away Team, 'away_goals_conceded_avg']
+        away_goals_conceded_avg = team_stats.loc[Home Team, 'home_goals_conceded_avg']
+    
+        # Expected goals for each team
+        home_goals_expected = (home_goals_avg + away_goals_conceded_avg) / 2
+        away_goals_expected = (away_goals_avg + home_goals_conceded_avg) / 2
+    
+        st.write(f"Expected goals for {Home Team}: {home_goals_expected:.2f}")
+        st.write(f"Expected goals for {Away Team}: {away_goals_expected:.2f}")
+    
+        # Predict the distribution of goals
+        home_goal_prob = [poisson.pmf(i, home_goals_expected) for i in range(6)]
+        away_goal_prob = [poisson.pmf(i, away_goals_expected) for i in range(6)]
+    
+        st.bar_chart(pd.DataFrame({
+            f'{Home Team} Goal Probability': home_goal_prob,
+            f'{Away Team} Goal Probability': away_goal_prob
+        }, index=list(range(6))))
+
+
+
+
 
     
     
