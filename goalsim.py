@@ -189,18 +189,18 @@ with tab3:
     away_team = st.selectbox("Away Team", team_stats.index)
     
     if st.button("Predict"):
-        home_goals_avg = team_stats.loc[Home Team, 'home_goals_avg']
-        away_goals_avg = team_stats.loc[Away Team, 'away_goals_avg']
+        home_goals_avg = team_stats.loc["Home Team", 'home_goals_avg']
+        away_goals_avg = team_stats.loc["Away Team", 'away_goals_avg']
     
-        home_goals_conceded_avg = team_stats.loc[Away Team, 'away_goals_conceded_avg']
-        away_goals_conceded_avg = team_stats.loc[Home Team, 'home_goals_conceded_avg']
+        home_goals_conceded_avg = team_stats.loc["Away Team", 'away_goals_conceded_avg']
+        away_goals_conceded_avg = team_stats.loc["Home Team", 'home_goals_conceded_avg']
     
         # Expected goals for each team
         home_goals_expected = (home_goals_avg + away_goals_conceded_avg) / 2
         away_goals_expected = (away_goals_avg + home_goals_conceded_avg) / 2
     
-        st.write(f"Expected goals for {Home Team}: {home_goals_expected:.2f}")
-        st.write(f"Expected goals for {Away Team}: {away_goals_expected:.2f}")
+        st.write(f"Expected goals for {"Home Team"}: {home_goals_expected:.2f}")
+        st.write(f"Expected goals for {"Away Team"}: {away_goals_expected:.2f}")
     
         # Predict the distribution of goals
         home_goal_prob = [poisson.pmf(i, home_goals_expected) for i in range(6)]
