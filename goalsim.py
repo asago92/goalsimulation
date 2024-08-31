@@ -8,7 +8,7 @@ from scipy.stats import poisson
 st.title('Enhanced Football Goal Predictions')
 
 # Load the data
-data = pd.read_csv('/mnt/data/epl_streamlit - 23-24 Results.csv')
+data = pd.read_csv('epl_streamlit.csv')
 
 # Create tabs for different analyses
 tab1, tab2, tab3 = st.tabs(["Linear Regression", "Simulation", "Poisson Distribution"])
