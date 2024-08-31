@@ -9,7 +9,7 @@ from scipy.stats import poisson
 st.title('Goal Predictions')
 
 # Load the data
-data = pd.read_csv('epl_streamlit_13May.csv')
+data = pd.read_csv('epl_streamlit.csv')
 
 tab1, tab2, tab3 = st.tabs(["Linear Regression", "Simulation", "Poisson Distribution"])
 with tab1:        
@@ -170,7 +170,7 @@ with tab2:
         st.dataframe(df_results)
 
 with tab3:
-    data = pd.read_csv('epl_streamlit_13May.csv')
+    data = pd.read_csv('epl_streamlit.csv')
     # Calculate average goals scored and conceded
     team_stats = data.groupby('Home Team').agg({
         'Home Goals': 'mean',
