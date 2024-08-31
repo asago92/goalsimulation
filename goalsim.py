@@ -43,7 +43,7 @@ with tab1:
         # Home model
         if not home_data.empty:
             home_goals = home_data['Home Goals'].values
-            home_features = home_data[['Match Number', 'Home Result Code']]
+            home_features = home_data[['Match', 'Home Result Code']]
             home_conceded_by_opponent = data[data['Home Team'] == selected_away_team]['Away Conceded'].mean()
             home_features['Opponent Avg Conceded'] = home_conceded_by_opponent
     
