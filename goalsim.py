@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 from scipy.stats import poisson
 
 # Title for the Streamlit App
-st.title('Enhanced Football Goal Predictions')
+st.title('Football Goal Predictions')
 
 # Load the data
 data = pd.read_csv('epl_streamlit.csv')
