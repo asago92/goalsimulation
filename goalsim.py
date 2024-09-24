@@ -83,21 +83,54 @@ with tab1:
     if __name__ == "__main__":
         main()
 
+def get_scoring_probability(team_avg_goals, opponent_avg_conceded, league_avg_conceded):
+    # Step 1: Calculate the probability of scoring per minute
+    goals_per_minute = team_avg_goals / 90
+    
+    # Step 2: Adjust based on the opponent's defensive strength
+    adjusted_probability = goals_per_minute * (opponent_avg_conceded / league_avg_conceded)
+    
+    return adjusted_probability
+
 with tab2:
     st.subheader('Goal Simulation')
     st.write("""
-    Simulate the number of goals based on a user-defined scoring probability.
+    This simulation calculates scoring probabilities based on the team's past performance and adjusts for the strength of their opponent's defense.
     """)
     
-    # Input sliders for probabilities and number of simulations
-    cols = st.columns(3)
-    with cols[0]:
-        prob_team1 = st.number_input('Home Team Score Prob', min_value=0.00, value=0.05, step=0.01)
-    with cols[1]:
-        prob_team2 = st.number_input('Away Team Score Prob', min_value=0.00, value=0.05, step=0.01)
-    with cols[2]:
-        num_simulations = st.number_input('Number of Simulations', min_value=1, value=10000)
+    # Select home and away teams
+    home_team = st.selectbox('Select Home Team', data['Home Team'].unique())
+    away_team = st.selectbox('Select Away Team', data['Away Team'].unique())
     
+    # Calculate average goals scored and conceded
+    team_stats = data.groupby('Home Team').agg({
+        'Home Goals': 'mean',
+        'Away Goals': 'mean',
+        'Home Conceded': 'mean',
+        'Away Conceded': 'mean'
+    }).reset_index()
+
+    # Get league-wide average conceded goals
+    league_avg_conceded = team_stats[['Home Conceded', 'Away Conceded']].mean().mean()
+    
+    # Fetch team stats
+    home_stats = team_stats[team_stats['Home Team'] == home_team]
+    away_stats = team_stats[team_stats['Home Team'] == away_team]
+    
+    # Fetch relevant statistics for calculation
+    home_avg_goals = home_stats['Home Goals'].values[0]
+    away_avg_goals = away_stats['Away Goals'].values[0]
+    
+    home_avg_conceded_by_opponent = away_stats['Away Conceded'].values[0]
+    away_avg_conceded_by_opponent = home_stats['Home Conceded'].values[0]
+    
+    # Step 3: Calculate probabilities
+    prob_team1 = get_scoring_probability(home_avg_goals, home_avg_conceded_by_opponent, league_avg_conceded)
+    prob_team2 = get_scoring_probability(away_avg_goals, away_avg_conceded_by_opponent, league_avg_conceded)
+    
+    # Number of simulations
+    num_simulations = st.number_input('Number of Simulations', min_value=1, value=10000)
+
     st.markdown("---")
     
     def simulate_goals(prob, minutes=90):
@@ -111,7 +144,7 @@ with tab2:
             results.append((goals_team1, goals_team2))
         return results
     
-    # Run simulations
+    # Run simulations with calculated probabilities
     results = run_simulations(prob_team1, prob_team2, num_simulations)
     
     # Create a DataFrame to display results
