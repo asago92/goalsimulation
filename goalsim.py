@@ -13,16 +13,29 @@ data = pd.read_csv('epl_streamlit.csv')
 # Create tabs for different analyses
 tab1, tab2, tab3 = st.tabs(["Linear Regression", "Simulation", "Poisson Distribution"])
 
+# Updated Tab 1 code with feature engineering for home vs away strength
+
 with tab1:
     # Mapping the results to numeric codes
     result_mapping = {'W': 2, 'D': 1, 'L': 0}
     data['Home Result Code'] = data['Home Result'].map(result_mapping)
     data['Away Result Code'] = data['Away Result'].map(result_mapping)
+    
+    def calculate_team_strength(data, team, home=True):
+        if home:
+            team_goals_scored = data[data['Home Team'] == team]['Home Goals'].mean()
+            team_goals_conceded = data[data['Home Team'] == team]['Home Conceded'].mean()
+        else:
+            team_goals_scored = data[data['Away Team'] == team]['Away Goals'].mean()
+            team_goals_conceded = data[data['Away Team'] == team]['Away Conceded'].mean()
+        
+        return team_goals_scored - team_goals_conceded
 
     def main():
-        st.subheader('Goal Prediction using Linear Regression')
+        st.subheader('Goal Prediction with Home and Away Strength Feature')
         st.write("""
         This model predicts the number of goals using a linear regression approach based on past performance.
+        We've added a new feature to account for home and away team strength to improve the predictions.
         """)
     
         # Dropdowns to select home and away teams
@@ -37,24 +50,30 @@ with tab1:
         home_data = data[data['Home Team'] == selected_home_team]
         away_data = data[data['Away Team'] == selected_away_team]
     
-        # Prepare data for model training
         if not home_data.empty and not away_data.empty:
+            # Step 1: Calculate home and away performance strength
+            home_strength = calculate_team_strength(data, selected_home_team, home=True)
+            away_strength = calculate_team_strength(data, selected_away_team, home=False)
+    
+            # Prepare the features for model training
             home_goals = home_data['Home Goals'].values
-            home_features = home_data[['Match', 'Home Result Code']]
+            home_features = home_data[['Match', 'Home Result Code']].copy()
+            home_features['Home Strength'] = home_strength
             home_features['Opponent Avg Conceded'] = away_data['Away Conceded'].mean()
     
             away_goals = away_data['Away Goals'].values
-            away_features = away_data[['Match', 'Away Result Code']]
+            away_features = away_data[['Match', 'Away Result Code']].copy()
+            away_features['Away Strength'] = away_strength
             away_features['Opponent Avg Conceded'] = home_data['Home Conceded'].mean()
     
             # Fit models
             model_home = LinearRegression()
             model_home.fit(home_features, home_goals)
-            predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_features['Opponent Avg Conceded'].mean()]])
+            predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_strength, home_features['Opponent Avg Conceded'].mean()]])
     
             model_away = LinearRegression()
             model_away.fit(away_features, away_goals)
-            predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_features['Opponent Avg Conceded'].mean()]])
+            predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_strength, away_features['Opponent Avg Conceded'].mean()]])
     
             # Display predictions
             cols = st.columns(2)
