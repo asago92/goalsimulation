@@ -20,7 +20,8 @@ with tab1:
     result_mapping = {'W': 2, 'D': 1, 'L': 0}
     data['Home Result Code'] = data['Home Result'].map(result_mapping)
     data['Away Result Code'] = data['Away Result'].map(result_mapping)
-    
+
+    # Function to calculate team strength for home and away
     def calculate_team_strength(data, team, home=True):
         if home:
             team_goals_scored = data[data['Home Team'] == team]['Home Goals'].mean()
@@ -28,15 +29,15 @@ with tab1:
         else:
             team_goals_scored = data[data['Away Team'] == team]['Away Goals'].mean()
             team_goals_conceded = data[data['Away Team'] == team]['Away Conceded'].mean()
-        
         return team_goals_scored - team_goals_conceded
 
     def main():
         st.subheader('Goal Prediction with Home and Away Strength Feature')
         st.write("""
         This model predicts the number of goals using a linear regression approach based on past performance.
+        We've added a new feature to account for home and away team strength to improve the predictions.
         """)
-    
+
         # Dropdowns to select home and away teams
         team_list = sorted(list(set(data['Home Team']).union(set(data['Away Team']))))
         cols = st.columns(2)
@@ -44,36 +45,53 @@ with tab1:
             selected_home_team = st.selectbox('Select home team', team_list)
         with cols[1]:
             selected_away_team = st.selectbox('Select away team', team_list)
-    
+
         # Filter data for selected teams
         home_data = data[data['Home Team'] == selected_home_team]
         away_data = data[data['Away Team'] == selected_away_team]
-    
+
         if not home_data.empty and not away_data.empty:
             # Step 1: Calculate home and away performance strength
             home_strength = calculate_team_strength(data, selected_home_team, home=True)
             away_strength = calculate_team_strength(data, selected_away_team, home=False)
-    
+
             # Prepare the features for model training
             home_goals = home_data['Home Goals'].values
             home_features = home_data[['Match', 'Home Result Code']].copy()
             home_features['Home Strength'] = home_strength
             home_features['Opponent Avg Conceded'] = away_data['Away Conceded'].mean()
-    
+
             away_goals = away_data['Away Goals'].values
             away_features = away_data[['Match', 'Away Result Code']].copy()
             away_features['Away Strength'] = away_strength
             away_features['Opponent Avg Conceded'] = home_data['Home Conceded'].mean()
-    
+
             # Fit models
             model_home = LinearRegression()
             model_home.fit(home_features, home_goals)
-            predicted_home_goals = model_home.predict([[len(home_data) + 1, result_mapping['W'], home_strength, home_features['Opponent Avg Conceded'].mean()]])
-    
+
             model_away = LinearRegression()
             model_away.fit(away_features, away_goals)
-            predicted_away_goals = model_away.predict([[len(away_data) + 1, result_mapping['W'], away_strength, away_features['Opponent Avg Conceded'].mean()]])
-    
+
+            # Step 2: Prepare DataFrames for prediction with the correct feature names
+            home_features_for_prediction = pd.DataFrame({
+                'Match': [len(home_data) + 1], 
+                'Home Result Code': [result_mapping['W']], 
+                'Home Strength': [home_strength],
+                'Opponent Avg Conceded': [home_features['Opponent Avg Conceded'].mean()]
+            })
+
+            away_features_for_prediction = pd.DataFrame({
+                'Match': [len(away_data) + 1], 
+                'Away Result Code': [result_mapping['W']], 
+                'Away Strength': [away_strength],
+                'Opponent Avg Conceded': [away_features['Opponent Avg Conceded'].mean()]
+            })
+
+            # Predict home and away goals using the trained models
+            predicted_home_goals = model_home.predict(home_features_for_prediction)
+            predicted_away_goals = model_away.predict(away_features_for_prediction)
+
             # Display predictions
             cols = st.columns(2)
             with cols[0]:
