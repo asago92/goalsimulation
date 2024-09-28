@@ -35,7 +35,6 @@ with tab1:
         st.subheader('Goal Prediction with Home and Away Strength Feature')
         st.write("""
         This model predicts the number of goals using a linear regression approach based on past performance.
-        We've added a new feature to account for home and away team strength to improve the predictions.
         """)
     
         # Dropdowns to select home and away teams
